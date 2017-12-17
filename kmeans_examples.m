@@ -3,10 +3,11 @@ x = data.x;
 c = data.c;
 k=3;
 X=x(:,1:2);
-%% 2 dimensional clusters
+
+%% kmeans on first 2 dimensions of data
 [C,M,C0,M0]=KmeansClustering(X,k)
 
-%%
+%% plot points with initial clusters and centroids and final clusters and centroids
 figure
 scatter(X(:,1),X(:,2),36,C0)
 hold on
@@ -29,7 +30,7 @@ for i=1:3
     accuracy(i)=correct/tot
 end
 
-%% Rand Index 
+%% calculate accuracy with Rand Index 
 for i=1:3
     [C,M,C0,M0]=KmeansClustering(X,k)
     RI(i)=randindex(C,c)
@@ -52,6 +53,7 @@ for i=1:50
     end
     SSE(i,1)=sum(sums)
 end
+
 %%
 histogram(accuracy,4)
 title('histogram of accuracy')

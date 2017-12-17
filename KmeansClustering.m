@@ -1,3 +1,6 @@
+%% Implements K means clustering in Matlab on data X with k clusters. 
+%% Returns C = vector of classes, M = cluster centroids, C0 = initial classes, and M0 initial centroids
+
 function [C,M,C0,M0]=KmeansClustering(X,k)
     %% pick k random centroids
     a=randperm(size(X,1));
@@ -14,7 +17,7 @@ function [C,M,C0,M0]=KmeansClustering(X,k)
     dist=1
     oldM=M0;
     C=C0;
-    %%
+    %% 
     while dist>0 
         %% Calculate new centroids
         for i=1:k

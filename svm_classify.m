@@ -1,3 +1,6 @@
+%% Support Vector Machine Classifier for Matlab. 
+%% Takes Md which is output of svm_train.m and data matrix y
+%% Returns predicted class chat and d, a measure of confidence in the prediction
 
 function [chat,d] = svm_classify(Md,y)
 %%

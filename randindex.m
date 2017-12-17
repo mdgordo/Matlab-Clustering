@@ -1,3 +1,6 @@
+%% randindex is a function for determining the accuracy of clusters
+%% inputs are C and c, same size vectors of assigned clusters and true cluster values
+
 function RI = randindex(C,c)
     bi=nchoosek(size(C,1),2)
     %% which points in same class - c

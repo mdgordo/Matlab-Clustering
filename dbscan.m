@@ -1,3 +1,5 @@
+%% Implementation of dbscan algorithm for Matlab to find density based clusters
+%% Inputs are data X, min_pts and epsilon are user defined options, and dist is a distance function (e.g pdist)
 
 function [C,point_type]=dbscan(X,min_pts,epsilon,dist)
     v=zeros(size(X,1),1);

@@ -1,20 +1,28 @@
+%% Testing parameters of SVM classifiers on various datasets
+%% uses libsvm from: https://www.csie.ntu.edu.tw/~cjlin/libsvm/#download
+
 addpath('libsvm-3.22/matlab/',0)
+
 %% Linear SVM
+%% load and visualize data
 data = load('mixed.mat');
 c = data.c;
 x = data.x;
 scatter(x(:,1),x(:,2),36,c)
 colormap(winter)
 print('scatter1.png', '-dpng')
-%% 4 fold validation
+
+%% Train SVM classifier using various values for 'nu' and evaluate using 4-fold cross validation
+%% split data into 4 random parts
 rng(3)
 idx=randperm(size(c,1));
 for i=1:4
     start=((i-1)*size(c,1)/4)+1;
     fin=i*size(c,1)/4;
     ip(i,:)=idx(start:fin);
-end  
-%% 
+end
+
+%% Train and evaluate classifier for different values of nu
 for j=1:50
     nu(j)=.1+(j-1)/100;
     args{j}=['-s 1 -t 0 -n ' num2str(nu(j))];
@@ -34,15 +42,18 @@ for j=1:50
     end
     acc(j)=sum(accuracy)/4;
 end
+
 %%
 nu=transpose(nu);
 acc=transpose(acc);
-%% plot
+
+%% plot accuracy vs nu
 [mx,ind]=max(acc)
 plot(nu, acc,'Color','blue','MarkerIndices',ind,'Marker','pentagram','MarkerFaceColor','red','MarkerEdgeColor','red','MarkerSize',10)
 xlabel('nu')
 ylabel('acc')
 print('scatter2.png', '-dpng')
+
 %% Train for optimal nu, predict new points
 args=['-s 1 -t 0 -n ' num2str(nu(ind))]
 Mdopt=svmtrain(c,x,args)
@@ -61,7 +72,7 @@ for i=1:30
         y(a,:)=[X(1,i) Y(j,1)]
     end
 end
-%%
+%% visualize decision area
 cs=rand(900,1)
 chat=svmpredict(cs,y,Mdopt)
 scatter(y(:,1),y(:,2),36,chat)
@@ -72,14 +83,14 @@ print('scatter3.png', '-dpng')
 %% Kernal SVM
 % RBF Kernel SVM data
 clear all
-
 data = load('target.mat');
 c = data.c;
 x = data.x;
 scatter(x(:,1),x(:,2),36,c)
 colormap(winter)
 print('scatter4.png', '-dpng')
-%% 4 fold validation
+
+%% Train SVM classifier using various values for gamma and evaluate using 4-fold cross validation
 rng(3)
 idx=randperm(size(c,1));
 for i=1:4
@@ -87,7 +98,7 @@ for i=1:4
     fin=i*size(c,1)/4;
     ip(i,:)=idx(start:fin);
 end
-%%
+%% Train and evaluate classifier for different values of gamma
 for j=1:31
     gam(j)=2^(j-15)
     args{j}=['-s 1 -t 2 -n 0.5 -g ' num2str(gam(j))];
@@ -108,7 +119,7 @@ for j=1:31
     acc(j)=sum(accuracy)/4;
 end
 
-%% plot
+%% plot accuracy vs gamma
 [mx,ind]=max(acc)
 plot(log2(gam), acc,'Color','blue','MarkerIndices',ind,'Marker','pentagram','MarkerFaceColor','red','MarkerEdgeColor','red','MarkerSize',10)
 xlabel('log2(gam)')
@@ -133,7 +144,8 @@ for i=1:30
         y(a,:)=[X(1,i) Y(j,1)]
     end
 end
-%%
+
+%% visualize decision area
 cs=rand(900,1)
 chat=svmpredict(cs,y,Mdopt)
 scatter(y(:,1),y(:,2),36,chat)

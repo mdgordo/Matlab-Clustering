@@ -1,10 +1,9 @@
-%%
-clear all
+%% Tests dbscan on data
 data = load('cluster_1.mat');
 x = data.x;
 
 %% Test on unlabeled data
-%% scramble data, calculate distances, epsilon
+%% scramble data, calculate distance matrix and epsilon as 1st percentile of distances
 rng(3);
 idx=randperm(size(x,1));
 xrand=x(idx,:);
@@ -14,21 +13,21 @@ Dsq=squareform(D);
 epsilon=prctile(D,1);
 X=xrand;
 
-%% calculate min_pts
+%% set min_pts = 10th percentile of points within epsilon
 for i=1:size(x,1)
     neighbors(i,1)=sum(Dsq(i,:)<=epsilon)-1;
 end
 min_pts=prctile(neighbors,10)
 
-%% scan and plots
+%% scan and plot clusters and point types
 [C1,point_type]=dbscan(X,min_pts,epsilon,dist)
 scatter(X(:,1),X(:,2),36,C1)
 colormap jet
 print('dbscan1.png', '-dpng')
-
 %%
 scatter(X(:,1),X(:,2),36,point_type)
 print('dbscan2.png', '-dpng')
+
 %% repeat w/different epsilon
 epsilon=prctile(D,.3);
 for i=1:size(x,1)
@@ -36,7 +35,7 @@ for i=1:size(x,1)
 end
 min_pts=prctile(neighbors,10)
 
-%% scan and plots
+%% scan and plot
 [C2,point_type]=dbscan(X,min_pts,epsilon,dist)
 scatter(X(:,1),X(:,2),36,C2)
 colormap lines
@@ -45,13 +44,14 @@ print('dbscan3.png', '-dpng')
 scatter(X(:,1),X(:,2),36,point_type)
 colormap jet
 print('dbscan4.png', '-dpng')
+
 %% Test on labeled data
 clear all 
 data = load('cluster_2.mat');
 x = data.x;
 c = data.c;
 
-%% 27 iterations
+%% 27 iterations with different values of min_pts, epsilon
 % set up
 e=[3 5 7];
 m=[10 20 30];
@@ -72,7 +72,7 @@ for i=1:3
 end
 dist=@(y,Y) pdist2(y,Y)
 
-%% Cluster
+%% Cluster and evaluate with RandIndex
 for i=1:3
     for j=1:3
         for k=1:3

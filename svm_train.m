@@ -1,3 +1,6 @@
+%% Trains Support Vector Machine classifier for Matlab
+%% takes a vector of classes, c, a data matrix, x, and kh an implicit kernel function
+%% returns a struct Md, that is an input for svm_train.m
 
 function Md = svm_train(c,x,kh)
 %% Create Mercer Matrix
